@@ -1,0 +1,25 @@
+/* src/components/Navbar.css */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #3F2F60;
+}
+
+.navbar-left h2 {
+  margin: 0;
+  color: #ffffff;
+}
+
+.navbar-right {
+  display: flex;
+  gap: 10px;
+}
+
+.navbar-right select,
+.navbar-right input {
+  padding: 6px;
+  font-size: 14px;
+}
