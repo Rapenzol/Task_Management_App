@@ -1,18 +1,37 @@
 import React from 'react';
+import { useDraggable } from '@dnd-kit/core';
 import './TaskCard.css';
 
-const TaskCard = ({ task, onCardClick, updateTask, deleteTask }) => {
+const TaskCard = ({ task, onCardClick, deleteTask }) => {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: task.id,
+    data: {
+      task,
+    },
+  });
+
+  const style = {
+    transform: transform
+      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+      : undefined,
+  };
+
   return (
-    <div className="task-card" onClick={() => onCardClick(task)}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      className="task-card"
+    >
       <div className="task-title">{task.title}</div>
       <div className="task-actions">
         <button
           className="edit-btn"
           onClick={(e) => {
             e.stopPropagation();
-            updateTask(task); // ID ke jagah pura task bhejo
+            onCardClick(task); // ✅ Only open modal/edit form
           }}
-
         >
           ✏️
         </button>

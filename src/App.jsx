@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DndContext } from '@dnd-kit/core';
 import TaskColumn from './components/TaskColumn';
 import TaskForm from './components/TaskForm';
 import Navbar from './components/Navbar';
@@ -13,22 +14,21 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('');
   const [sortBy, setSortBy] = useState('');
-  const [editTaskData, setEditTaskData] = useState(null); // ✅ NEW
+  const [editTaskData, setEditTaskData] = useState(null);
 
   const addTask = (newTask) => {
     if (editTaskData) {
-      // ✅ Editing existing task
-      setTasks(tasks.map((task) => (task.id === editTaskData.id ? { ...newTask, id: editTaskData.id } : task)));
-      setEditTaskData(null); // Clear edit mode
+      setTasks(tasks.map((task) =>
+        task.id === editTaskData.id ? { ...newTask, id: editTaskData.id } : task
+      ));
+      setEditTaskData(null);
     } else {
-      // ✅ Adding new task
       setTasks([...tasks, { ...newTask, id: Date.now() }]);
     }
   };
 
-  const updateTask = (id) => {
-    const taskToEdit = tasks.find(task => task.id === id);
-    setEditTaskData(taskToEdit); // ✅ Send data to form
+  const updateTask = (task) => {
+    setEditTaskData(task);
   };
 
   const deleteTask = (id) => {
@@ -58,6 +58,22 @@ const App = () => {
     return filtered;
   };
 
+  // ✅ Handle drag end event
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    const draggedTaskId = parseInt(active.id);
+    const newStatus = over.id;
+
+    setTasks(prev =>
+      prev.map(task =>
+        task.id === draggedTaskId ? { ...task, status: newStatus } : task
+      )
+    );
+  };
+
   return (
     <>
       <Navbar
@@ -65,27 +81,32 @@ const App = () => {
         onFilter={setPriorityFilter}
         onSort={setSortBy}
       />
-      <TaskForm addTask={addTask} editTask={editTaskData} /> {/* ✅ Pass editTask */}
-      <div className="board-container">
-        <TaskColumn
-          status="To Do"
-          tasks={getFilteredTasks("To Do")}
-          updateTask={updateTask}
-          deleteTask={deleteTask}
-        />
-        <TaskColumn
-          status="In Progress"
-          tasks={getFilteredTasks("In Progress")}
-          updateTask={updateTask}
-          deleteTask={deleteTask}
-        />
-        <TaskColumn
-          status="Done"
-          tasks={getFilteredTasks("Done")}
-          updateTask={updateTask}
-          deleteTask={deleteTask}
-        />
-      </div>
+      {editTaskData && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <TaskForm addTask={addTask} editTask={editTaskData} />
+            <button onClick={() => setEditTaskData(null)}>Close</button>
+          </div>
+        </div>
+      )}
+      {/* Always show TaskForm for adding new task */}
+      <TaskForm addTask={addTask} editTask={null} />
+
+
+      {/* ✅ Wrap in DndContext */}
+      <DndContext onDragEnd={handleDragEnd}>
+        <div className="board-container">
+          {["To Do", "In Progress", "Done"].map(status => (
+            <TaskColumn
+              key={status}
+              status={status}
+              tasks={getFilteredTasks(status)}
+              updateTask={updateTask}
+              deleteTask={deleteTask}
+            />
+          ))}
+        </div>
+      </DndContext>
     </>
   );
 };
