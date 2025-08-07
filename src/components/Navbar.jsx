@@ -6,7 +6,7 @@ const Navbar = ({ onFilter, onSort, onSearch }) => {
   return (
     <div className="navbar">
       <div className="navbar-left">
-        <h2>Task Manager</h2>
+        <h2 className='navbar-title'>Task Manager</h2>
       </div>
 
       <div className="navbar-right">

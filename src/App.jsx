@@ -1,113 +1,122 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DndContext } from '@dnd-kit/core';
 import TaskColumn from './components/TaskColumn';
 import TaskForm from './components/TaskForm';
+import EditTaskModal from './components/EditTaskModal';
 import Navbar from './components/Navbar';
 import './App.css';
 
 const App = () => {
-  const [tasks, setTasks] = useState([
-    { id: 1, title: 'Create UI', status: 'To Do', priority: 'High' },
-    { id: 2, title: 'Fix bugs', status: 'In Progress', priority: 'Medium' },
-    { id: 3, title: 'Deploy app', status: 'Done', priority: 'Low' }
-  ]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [priorityFilter, setPriorityFilter] = useState('');
+  const [tasks, setTasks] = useState(() => {
+    const saved = localStorage.getItem('tasks');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [editingTask, setEditingTask] = useState(null);
+  const [filter, setFilter] = useState('');
   const [sortBy, setSortBy] = useState('');
-  const [editTaskData, setEditTaskData] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   const addTask = (newTask) => {
-    if (editTaskData) {
-      setTasks(tasks.map((task) =>
-        task.id === editTaskData.id ? { ...newTask, id: editTaskData.id } : task
-      ));
-      setEditTaskData(null);
-    } else {
-      setTasks([...tasks, { ...newTask, id: Date.now() }]);
-    }
+    setTasks([...tasks, { ...newTask, id: Date.now() }]);
   };
 
-  const updateTask = (task) => {
-    setEditTaskData(task);
+  const updateTask = (updatedTask) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === updatedTask.id ? updatedTask : task
+      )
+    );
+    setEditingTask(null);
   };
 
   const deleteTask = (id) => {
-    setTasks(tasks.filter(task => task.id !== id));
+    setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  const getFilteredTasks = (status) => {
-    let filtered = tasks.filter(task => task.status === status);
-
-    if (searchTerm) {
-      filtered = filtered.filter(task =>
-        task.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (priorityFilter) {
-      filtered = filtered.filter(task => task.priority === priorityFilter);
-    }
-
-    if (sortBy === 'alphabetical') {
-      filtered = filtered.sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortBy === 'status') {
-      const order = { 'To Do': 1, 'In Progress': 2, 'Done': 3 };
-      filtered = filtered.sort((a, b) => order[a.status] - order[b.status]);
-    }
-
-    return filtered;
+  const handleEditClick = (task) => {
+    setEditingTask(task);
   };
 
-  // ✅ Handle drag end event
+  const handleCloseModal = () => {
+    setEditingTask(null);
+  };
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
-
     if (!over) return;
 
-    const draggedTaskId = parseInt(active.id);
+    const taskId = Number(active.id);
     const newStatus = over.id;
 
-    setTasks(prev =>
-      prev.map(task =>
-        task.id === draggedTaskId ? { ...task, status: newStatus } : task
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, status: newStatus } : task
       )
     );
   };
 
+  const handleFilter = (value) => {
+    setFilter(value);
+  };
+
+  const handleSort = (value) => {
+    setSortBy(value);
+  };
+
+  const handleSearch = (value) => {
+    setSearchTerm(value.toLowerCase());
+  };
+
+  const filteredTasks = tasks.filter((task) => {
+    const matchesPriority = filter ? task.priority === filter : true;
+    const matchesSearch = searchTerm
+      ? task.title.toLowerCase().includes(searchTerm)
+      : true;
+    return matchesPriority && matchesSearch;
+  });
+
+  const sortedTasks = [...filteredTasks].sort((a, b) => {
+    if (sortBy === 'alphabetical') {
+      return a.title.localeCompare(b.title);
+    } else if (sortBy === 'status') {
+      return a.status.localeCompare(b.status);
+    }
+    return 0;
+  });
+
   return (
-    <>
-      <Navbar
-        onSearch={setSearchTerm}
-        onFilter={setPriorityFilter}
-        onSort={setSortBy}
-      />
-      {editTaskData && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <TaskForm addTask={addTask} editTask={editTaskData} />
-            <button onClick={() => setEditTaskData(null)}>Close</button>
-          </div>
-        </div>
-      )}
-      {/* Always show TaskForm for adding new task */}
-      <TaskForm addTask={addTask} editTask={null} />
+    <div className="App">
+      <Navbar onFilter={handleFilter} onSort={handleSort} onSearch={handleSearch} />
+      <TaskForm addTask={addTask} />
 
-
-      {/* ✅ Wrap in DndContext */}
       <DndContext onDragEnd={handleDragEnd}>
         <div className="board-container">
-          {["To Do", "In Progress", "Done"].map(status => (
+          {['To Do', 'In Progress', 'Done'].map((status) => (
             <TaskColumn
               key={status}
               status={status}
-              tasks={getFilteredTasks(status)}
+              tasks={sortedTasks.filter((task) => task.status === status)}
               updateTask={updateTask}
               deleteTask={deleteTask}
+              onEdit={handleEditClick}
             />
           ))}
         </div>
       </DndContext>
-    </>
+
+      {editingTask && (
+        <EditTaskModal
+          task={editingTask}
+          onSave={updateTask}
+          onClose={handleCloseModal}
+        />
+      )}
+    </div>
   );
 };
 

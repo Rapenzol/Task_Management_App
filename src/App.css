@@ -1,6 +1,3 @@
-.App {
-  text-align: center;
-}
 
 .App-logo {
   height: 40vmin;
@@ -77,9 +74,9 @@
 }
 
 .modal {
-  background: #fff;
-  padding: 2rem;
+  background: #ded7eb;
+  padding: 10px;
   border-radius: 8px;
-  width: 400px;
+  width: 500px;
   max-width: 90%;
 }

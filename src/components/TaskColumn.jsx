@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import TaskCard from './TaskCard';
-import './TaskColumn.css';
 import EditTaskModal from './EditTaskModal';
+import './TaskColumn.css';
 
 const TaskColumn = ({ status, tasks, updateTask, deleteTask }) => {
   const statusClass = status.toLowerCase().replace(" ", "");
   const [selectedTask, setSelectedTask] = useState(null);
-
-  // DND-kit: droppable setup
-  const { setNodeRef } = useDroppable({
-    id: status, // id must match column identifier
-  });
+  const { setNodeRef } = useDroppable({ id: status });
 
   return (
     <div className={`column ${statusClass}`}>
       <h2>{status}</h2>
+
       <div ref={setNodeRef} className="task-list">
         {tasks.map((task) => (
           <TaskCard
@@ -28,9 +25,19 @@ const TaskColumn = ({ status, tasks, updateTask, deleteTask }) => {
         ))}
       </div>
 
-      {/* Modal open on edit */}
-      <EditTaskModal task={selectedTask} onClose={() => setSelectedTask(null)} />
+      {selectedTask && (
+        <EditTaskModal
+          task={selectedTask}
+          isOpen={true}
+          onClose={() => setSelectedTask(null)}
+          onSave={(updatedTask) => {
+            updateTask(updatedTask);
+            setSelectedTask(null);
+          }}
+        />
+      )}
     </div>
   );
 };
+
 export default TaskColumn;

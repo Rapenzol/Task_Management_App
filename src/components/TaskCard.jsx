@@ -5,9 +5,7 @@ import './TaskCard.css';
 const TaskCard = ({ task, onCardClick, deleteTask }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
-    data: {
-      task,
-    },
+    data: { task },
   });
 
   const style = {
@@ -20,17 +18,20 @@ const TaskCard = ({ task, onCardClick, deleteTask }) => {
     <div
       ref={setNodeRef}
       style={style}
-      {...listeners}
       {...attributes}
       className="task-card"
     >
-      <div className="task-title">{task.title}</div>
+      {/* ✅ Only title is draggable now */}
+      <div className="task-title" {...listeners}>
+        {task.title}
+      </div>
+
       <div className="task-actions">
         <button
           className="edit-btn"
           onClick={(e) => {
             e.stopPropagation();
-            onCardClick(task); // ✅ Only open modal/edit form
+            onCardClick(task); // ✅ Edit task
           }}
         >
           ✏️
@@ -39,7 +40,7 @@ const TaskCard = ({ task, onCardClick, deleteTask }) => {
           className="delete-btn"
           onClick={(e) => {
             e.stopPropagation();
-            deleteTask(task.id);
+            deleteTask(task.id); // ✅ Delete task
           }}
         >
           🗑
