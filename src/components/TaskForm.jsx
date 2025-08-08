@@ -15,7 +15,7 @@ function TaskForm({ addTask }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addTask(formData); // ✅ Only adds new task
+    addTask(formData);
     setFormData({
       title: '',
       description: '',

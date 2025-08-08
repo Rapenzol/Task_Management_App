@@ -21,7 +21,6 @@ const TaskCard = ({ task, onCardClick, deleteTask }) => {
       {...attributes}
       className="task-card"
     >
-      {/* ✅ Only title is draggable now */}
       <div className="task-title" {...listeners}>
         {task.title}
       </div>
@@ -31,7 +30,7 @@ const TaskCard = ({ task, onCardClick, deleteTask }) => {
           className="edit-btn"
           onClick={(e) => {
             e.stopPropagation();
-            onCardClick(task); // ✅ Edit task
+            onCardClick(task); // Edit task
           }}
         >
           ✏️
@@ -40,7 +39,7 @@ const TaskCard = ({ task, onCardClick, deleteTask }) => {
           className="delete-btn"
           onClick={(e) => {
             e.stopPropagation();
-            deleteTask(task.id); // ✅ Delete task
+            deleteTask(task.id); // Delete task
           }}
         >
           🗑
