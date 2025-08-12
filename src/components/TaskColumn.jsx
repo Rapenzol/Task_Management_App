@@ -14,7 +14,7 @@ const TaskColumn = ({ status, tasks, updateTask, deleteTask }) => {
       <h2>{status}</h2>
 
       <div ref={setNodeRef} className="task-list">
-        {tasks.map((task) => (
+        {tasks.map((task) => (  
           <TaskCard
             key={task.id}
             task={task}

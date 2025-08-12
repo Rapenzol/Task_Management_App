@@ -3,11 +3,24 @@
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.task-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.task-title {
+  font-weight: bold;
+}
+
+.task-desc {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #555;
 }
 
 .task-actions {
@@ -29,4 +42,10 @@
 
 .delete-btn:hover {
   color: red;
+}
+
+.task-option {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
