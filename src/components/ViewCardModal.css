@@ -1,0 +1,76 @@
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 30px;
+  width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+
+.close-button {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.close-button:hover {
+  color: #333;
+}
+
+
+.modal-title {
+  margin-top: 0;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+
+.modal-details p {
+  margin-bottom: 12px;
+  color: #555;
+}
+
+.status,
+.priority {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.85em;
+  /* font-weight: bold; */
+  text-transform: capitalize;
+}
+
+
+.priority.high {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+.priority.medium {
+  background-color: #ffeeba;
+  color: #856404;
+}
+.priority.low {
+  background-color: #d4edda;
+  color: #155724;
+}

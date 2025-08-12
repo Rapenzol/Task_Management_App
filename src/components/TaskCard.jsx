@@ -2,7 +2,7 @@ import React from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import './TaskCard.css';
 
-const TaskCard = ({ task, onCardClick, deleteTask }) => {
+const TaskCard = ({ task, onCardClick, deleteTask,onViewClick}) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
     data: { task },
@@ -11,6 +11,7 @@ const TaskCard = ({ task, onCardClick, deleteTask }) => {
   const style = {
     transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)`: undefined,
     borderLeft: `6px solid ${getPriorityColor(task.priority)}`,
+     cursor: 'pointer'
   };
   function getPriorityColor(priority) {
     switch (priority) {
@@ -29,6 +30,7 @@ const TaskCard = ({ task, onCardClick, deleteTask }) => {
       style={style}
       {...attributes}
       className="task-card"
+      onClick={() => onViewClick(task)}
     >
       <div className="task-option">
         <div className="task-title" {...listeners}>

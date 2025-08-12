@@ -4,6 +4,7 @@ import TaskColumn from './components/TaskColumn';
 import TaskForm from './components/TaskForm';
 import EditTaskModal from './components/EditTaskModal';
 import Navbar from './components/Navbar';
+import ViewTaskModal from './components/ViewCardModal';
 import './App.css';
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
   });
 
   const [editingTask, setEditingTask] = useState(null);
+  const [viewingTask, setViewingTask] = useState(null);
   const [filter, setFilter] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -46,6 +48,16 @@ const App = () => {
     setEditingTask(null);
   };
 
+  // open view modal
+  const handleViewClick = (task) => {
+    setViewingTask(task);
+  };
+
+  // Close view modal
+  const handleCloseViewModal = () => {
+    setViewingTask(null);
+  };
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over) return;
@@ -63,7 +75,7 @@ const App = () => {
   const handleFilter = (value) => {
     setFilter(value);
   };
-
+  
   const handleSort = (value) => {
     setSortBy(value);
   };
@@ -104,11 +116,13 @@ const App = () => {
               updateTask={updateTask}
               deleteTask={deleteTask}
               onEdit={handleEditClick}
+              onView={handleViewClick}
             />
           ))}
         </div>
       </DndContext>
 
+      {/* Edit Modal */}
       {editingTask && (
         <EditTaskModal
           task={editingTask}
@@ -116,8 +130,17 @@ const App = () => {
           onClose={handleCloseModal}
         />
       )}
+
+
+      {/* View Modal */}
+      {viewingTask && (
+        <ViewTaskModal
+          task={viewingTask}
+          onClose={handleCloseViewModal}
+        />
+      )}
     </div>
-  );  
+  );
 };
 
 export default App;
