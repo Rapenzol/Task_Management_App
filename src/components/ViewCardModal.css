@@ -12,7 +12,7 @@
   z-index: 1000;
 }
 
-.modal-content {
+/* .modal-content {
   background-color: #fff;
   padding: 30px;
   width: 400px;
@@ -20,7 +20,7 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   position: relative;
   font-family: 'Segoe UI', sans-serif;
-}
+} */
 
 
 .close-button {

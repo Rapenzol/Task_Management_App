@@ -1,0 +1,71 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  width: 400px;
+  border-radius: 8px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+input, textarea, select {
+  /* width: 100%; */
+  padding: 8px;
+  margin-top: 5px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.save-btn {
+  background: #4CAF50;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.cancel-btn {
+  background: #ccc;
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.addtask-description {
+  font-size: 14px;
+  color: #555;
+  margin-top: 5px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.ql-container {
+  min-height: 120px; /* description box height */
+  font-size: 14px;
+}
+
+.ql-editor {
+  min-height: 100px;
+}

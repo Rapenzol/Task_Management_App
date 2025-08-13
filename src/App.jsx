@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { DndContext } from '@dnd-kit/core';
 import TaskColumn from './components/TaskColumn';
-import TaskForm from './components/TaskForm';
 import EditTaskModal from './components/EditTaskModal';
 import Navbar from './components/Navbar';
 import ViewTaskModal from './components/ViewCardModal';
+import AddTaskModal from './components/AddTaskModal';
 import 'react-quill-new/dist/quill.snow.css';
 import './App.css';
 
@@ -20,6 +20,8 @@ const App = () => {
   const [filter, setFilter] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
+
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -105,8 +107,8 @@ const App = () => {
 
   return (
     <div className="App">
-      <Navbar onFilter={handleFilter} onSort={handleSort} onSearch={handleSearch} />
-      <TaskForm addTask={addTask} />
+      <Navbar onFilter={handleFilter} onSort={handleSort} onSearch={handleSearch} onAddTaskClick={() => setShowAddModal(true)}/>
+      {/* <TaskForm addTask={addTask} /> */}
 
       <DndContext onDragEnd={handleDragEnd}>
         <div className="board-container">
@@ -119,10 +121,15 @@ const App = () => {
               deleteTask={deleteTask}
               onEdit={handleEditClick}
               onView={handleViewClick}
+              onAddTaskClick={() =>setShowAddModal(true)}
             />
           ))}
         </div>
       </DndContext>
+
+       {showAddModal && (
+        <AddTaskModal onClose={() => setShowAddModal(false)} onAddTask={addTask} />
+      )}
 
       {/* Edit Modal */}
       {editingTask && (

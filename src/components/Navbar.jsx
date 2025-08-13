@@ -2,7 +2,7 @@
 import React from 'react';
 import './Navbar.css';
 
-const Navbar = ({ onFilter, onSort, onSearch }) => {
+const Navbar = ({ onFilter, onSort, onSearch, onAddTaskClick }) => {
   return (
     <div className="navbar">
       <div className="navbar-left">
@@ -28,6 +28,10 @@ const Navbar = ({ onFilter, onSort, onSearch }) => {
           placeholder="Search tasks..."
           onChange={(e) => onSearch(e.target.value)}
         />
+
+        <button className="add-task-btn" onClick={onAddTaskClick}>
+          + Add Task
+        </button>
       </div>
     </div>
   );

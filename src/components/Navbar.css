@@ -26,3 +26,15 @@
   padding: 6px;
   font-size: 14px;
 }
+
+.add-task-btn {
+    width: 63%;
+    background-color: #f7f495;
+    height: auto;
+    border-radius: 30px;
+    border: 1px solid #ccc;
+}
+
+.add-task-btn:hover {
+  background-color: #f3ff4a;
+}
