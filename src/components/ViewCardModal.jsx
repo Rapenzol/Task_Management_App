@@ -10,7 +10,7 @@ const ViewTaskModal = ({ task, onClose }) => {
         <button className="close-button" onClick={onClose}>&times;</button>
         <h2 className="modal-title">{task.title}</h2>
         <div className="modal-details">
-          <p><strong>Description:</strong> {task.description}</p>
+          <p><strong>Description:</strong>{" "}<span dangerouslySetInnerHTML={{ __html: task.description.replace(/^<p>|<\/p>$/g, "")}}/></p>
           <p><strong>Status:</strong> <span className={`status ${task.status.toLowerCase()}`}>{task.status}</span></p>
           <p><strong>Priority:</strong> <span className={`priority ${task.priority.toLowerCase()}`}>{task.priority}</span></p>
         </div>

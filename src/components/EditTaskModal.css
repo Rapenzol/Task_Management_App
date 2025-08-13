@@ -78,3 +78,8 @@ textarea {
   background-color: #ccc;
   color: black;
 }
+
+
+.description-editor .ql-editor {
+  min-height: 100px;
+}

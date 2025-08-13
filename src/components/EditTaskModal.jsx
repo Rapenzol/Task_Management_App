@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactQuill from 'react-quill-new';
 import './EditTaskModal.css';
 
 const EditTaskModal = ({ task, onSave, onClose }) => {
@@ -27,6 +28,9 @@ const EditTaskModal = ({ task, onSave, onClose }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleDescriptionChange = (value) => {
+    setFormData((prev) => ({ ...prev, description: value }));
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
@@ -62,17 +66,6 @@ const EditTaskModal = ({ task, onSave, onClose }) => {
                 <option value="Done">Done</option>
               </select>
             </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Description</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-              />
-            </div>
 
             <div className="form-group">
               <label>Priority</label>
@@ -84,6 +77,17 @@ const EditTaskModal = ({ task, onSave, onClose }) => {
             </div>
           </div>
 
+          
+            <div className="form-group description-editor">
+              <label>Description</label>
+              <ReactQuill
+                theme="snow"
+                value={formData.description}
+                onChange={handleDescriptionChange}
+                placeholder="Enter task description..."
+              />
+            </div>
+         
           <div className="modal-buttons">
             <button type="submit">Save</button>
             <button type="button" onClick={onClose}>Cancel</button>

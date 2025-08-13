@@ -5,7 +5,9 @@ import TaskForm from './components/TaskForm';
 import EditTaskModal from './components/EditTaskModal';
 import Navbar from './components/Navbar';
 import ViewTaskModal from './components/ViewCardModal';
+import 'react-quill-new/dist/quill.snow.css';
 import './App.css';
+
 
 const App = () => {
   const [tasks, setTasks] = useState(() => {
