@@ -4,8 +4,8 @@ import './TaskCard.css';
 
 const TaskCard = ({ task, onCardClick, deleteTask, onViewClick }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: task.id,
-    data: { task },
+    id: task._id,
+    data: { type: "task", task },
   });
 
   const style = {
@@ -50,7 +50,7 @@ const TaskCard = ({ task, onCardClick, deleteTask, onViewClick }) => {
             className="delete-btn"
             onClick={(e) => {
               e.stopPropagation();
-              deleteTask(task.id); // Delete task
+              deleteTask(task._id); // Delete task
             }}
           >
             🗑

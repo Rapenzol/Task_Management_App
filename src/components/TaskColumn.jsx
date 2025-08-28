@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import TaskCard from './TaskCard';
 import EditTaskModal from './EditTaskModal';
-import ViewTaskModal from './ViewCardModal';  // View modal import karo
+import ViewTaskModal from './ViewCardModal';  
 import './TaskColumn.css';
 
 const TaskColumn = ({ status, tasks, updateTask, deleteTask, onView }) => {
