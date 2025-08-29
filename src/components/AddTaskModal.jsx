@@ -8,7 +8,7 @@ const AddTaskModal = ({ onClose, onTaskAdded }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    status: "In process",
+    status: "To do",
     priority: "Low",
   });
 
