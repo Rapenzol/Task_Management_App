@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactQuill from "react-quill-new";
-import axios from "axios"; //  Add axios
 import "./EditTaskModal.css";
+import api from "../api";
 
 const EditTaskModal = ({ task, onSave, onClose }) => {
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ const EditTaskModal = ({ task, onSave, onClose }) => {
   useEffect(() => {
     if (task) {
       setFormData({
-        _id: task._id, //  MongoDB ID use karo
+        _id: task._id,
         title: task.title || "",
         description: task.description || "",
         status: task.status || "To Do",
@@ -42,11 +42,10 @@ const EditTaskModal = ({ task, onSave, onClose }) => {
     setLoading(true);
     try {
       //  API Call for Update
-      const { data } = await axios.put(
-        `http://localhost:5000/tasks/${formData._id}`,
+      const { data } = await api.put(
+        `/tasks/${formData._id}`,
         formData
       );
-
       onSave(data); // Updated task return
       onClose();
     } catch (error) {
