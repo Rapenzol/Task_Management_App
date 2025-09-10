@@ -9,7 +9,7 @@ const AddTaskModal = ({ onClose, onTaskAdded }) => {
     title: "",
     description: "",
     status: "To Do",
-    priority: "Low",
+    priority: "Low", 
   });
 
   const handleChange = (e) => {

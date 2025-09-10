@@ -1,40 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { DndContext } from '@dnd-kit/core';
-import TaskColumn from './components/TaskColumn';
-import EditTaskModal from './components/EditTaskModal';
-import Navbar from './components/Navbar';
-import ViewTaskModal from './components/ViewCardModal';
-import AddTaskModal from './components/AddTaskModal';
-import api from './api'; //  Axios instance import kiya
-import 'react-quill-new/dist/quill.snow.css';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { DndContext } from "@dnd-kit/core";
+import TaskColumn from "./components/TaskColumn";
+import EditTaskModal from "./components/EditTaskModal";
+import Navbar from "./components/Navbar";
+import ViewTaskModal from "./components/ViewCardModal";
+import AddTaskModal from "./components/AddTaskModal";
+import Login from "./components/LoginForm";
+import Register from "./components/Register";
+import api from "./api";
+import "react-quill-new/dist/quill.snow.css";
+import "./App.css";
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
   const [viewingTask, setViewingTask] = useState(null);
-  const [filter, setFilter] = useState('');
-  const [sortBy, setSortBy] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [filter, setFilter] = useState("");
+  const [sortBy, setSortBy] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
 
-  // ✅ Fetch tasks from backend
+  // ✅ Fetch tasks only if logged in
   useEffect(() => {
+    if (!token) return;
+
     const fetchTasks = async () => {
       try {
-        const res = await api.get('/tasks');
+        const res = await api.get("/tasks", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setTasks(res.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          setToken(null);
+        }
       }
     };
     fetchTasks();
-  }, []);
+  }, [token]);
 
   // ✅ Add task
   const addTask = async (newTask) => {
     try {
-      const res = await api.post('/tasks', newTask);
+      const res = await api.post("/tasks", newTask, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setTasks([...tasks, res.data]);
     } catch (error) {
       console.error("Error adding task:", error);
@@ -44,8 +58,10 @@ const App = () => {
   // ✅ Update task
   const updateTask = async (updatedTask) => {
     try {
-      const res = await api.put(`/tasks/${updatedTask._id}`, updatedTask);
-      setTasks(tasks.map(task => task._id === updatedTask._id ? res.data : task));
+      const res = await api.put(`/tasks/${updatedTask._id}`, updatedTask, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTasks(tasks.map((task) => (task._id === updatedTask._id ? res.data : task)));
       setEditingTask(null);
     } catch (error) {
       console.error("Error updating task:", error);
@@ -55,8 +71,10 @@ const App = () => {
   // ✅ Delete task
   const deleteTask = async (id) => {
     try {
-      await api.delete(`/tasks/${id}`);
-      setTasks(tasks.filter(task => task._id !== id));
+      await api.delete(`/tasks/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTasks(tasks.filter((task) => task._id !== id));
     } catch (error) {
       console.error("Error deleting task:", error);
     }
@@ -65,12 +83,10 @@ const App = () => {
   const handleEditClick = (task) => setEditingTask(task);
   const handleCloseModal = () => setEditingTask(null);
 
-  // ✅ Open view modal
   const handleViewClick = (task) => setViewingTask(task);
-
-  // ✅ Close view modal
   const handleCloseViewModal = () => setViewingTask(null);
 
+  // ✅ Drag and Drop
   const handleDragEnd = async (event) => {
     const { active, over } = event;
     if (!over) return;
@@ -79,11 +95,13 @@ const App = () => {
     const newStatus = over.id;
 
     try {
-      const taskToUpdate = tasks.find(task => task._id === taskId);
+      const taskToUpdate = tasks.find((task) => task._id === taskId);
       const updatedTask = { ...taskToUpdate, status: newStatus };
-      const res = await api.put(`/tasks/${taskId}`, updatedTask);
+      const res = await api.put(`/tasks/${taskId}`, updatedTask, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      setTasks(tasks.map(task => task._id === taskId ? res.data : task));
+      setTasks(tasks.map((task) => (task._id === taskId ? res.data : task)));
     } catch (error) {
       console.error("Error updating task status:", error);
     }
@@ -93,7 +111,12 @@ const App = () => {
   const handleSort = (value) => setSortBy(value);
   const handleSearch = (value) => setSearchTerm(value.toLowerCase());
 
-  // ✅ Filtered + Sorted tasks
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+  };
+
+  // ✅ Filter + Sort
   const filteredTasks = tasks.filter((task) => {
     const matchesPriority = filter ? task.priority === filter : true;
     const matchesSearch = searchTerm
@@ -103,23 +126,25 @@ const App = () => {
   });
 
   const sortedTasks = [...filteredTasks].sort((a, b) => {
-    if (sortBy === 'alphabetical') return a.title.localeCompare(b.title);
-    else if (sortBy === 'status') return a.status.localeCompare(b.status);
+    if (sortBy === "alphabetical") return a.title.localeCompare(b.title);
+    else if (sortBy === "status") return a.status.localeCompare(b.status);
     return 0;
   });
 
-  return (
+  // ✅ Dashboard Component
+  const Dashboard = () => (
     <div className="App">
       <Navbar
         onFilter={handleFilter}
         onSort={handleSort}
         onSearch={handleSearch}
         onAddTaskClick={() => setShowAddModal(true)}
+        onLogout={handleLogout}
       />
 
       <DndContext onDragEnd={handleDragEnd}>
         <div className="board-container">
-          {['To Do', 'In Progress', 'Done'].map((status) => (
+          {["To Do", "In Progress", "Done"].map((status) => (
             <TaskColumn
               key={status}
               status={status}
@@ -136,12 +161,12 @@ const App = () => {
       </DndContext>
 
       {showAddModal && (
-        <AddTaskModal 
-        onClose={() => setShowAddModal(false)} 
-        onTaskAdded={addTask} />
+        <AddTaskModal
+          onClose={() => setShowAddModal(false)}
+          onTaskAdded={addTask}
+        />
       )}
 
-      {/* Edit Modal */}
       {editingTask && (
         <EditTaskModal
           task={editingTask}
@@ -149,7 +174,7 @@ const App = () => {
           onClose={handleCloseModal}
         />
       )}
-      {/* View Modal */}
+
       {viewingTask && (
         <ViewTaskModal
           task={viewingTask}
@@ -157,6 +182,22 @@ const App = () => {
         />
       )}
     </div>
+  );
+
+  return (
+    <Router>
+      <Routes>
+        {/* If logged in → Dashboard, else → Login */}
+        <Route
+          path="/"
+          element={token ? <Dashboard /> : <Navigate to="/login" />}
+        />
+        <Route path="/login" element={<Login onLogin={setToken} />} />
+        <Route path="/register" element={<Register />} />
+        {/* Catch invalid routes */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
   );
 };
 

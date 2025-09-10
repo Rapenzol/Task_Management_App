@@ -2,7 +2,7 @@
 import React from 'react';
 import './Navbar.css';
 
-const Navbar = ({ onFilter, onSort, onSearch, onAddTaskClick }) => {
+const Navbar = ({ onFilter, onSort, onSearch, onAddTaskClick, onLogout  }) => {
   return (
     <div className="navbar">
       <div className="navbar-left">
@@ -22,6 +22,7 @@ const Navbar = ({ onFilter, onSort, onSearch, onAddTaskClick }) => {
           <option value="alphabetical">Alphabetical</option>
           <option value="status">Status</option>
         </select>
+        
 
         <input
           type="text"
@@ -32,6 +33,12 @@ const Navbar = ({ onFilter, onSort, onSearch, onAddTaskClick }) => {
         <button className="add-task-btn" onClick={onAddTaskClick}>
           + Add Task
         </button>
+        
+
+        <button className="logout-btn" onClick={onLogout}>
+          Logout
+        </button>
+
       </div>
     </div>
   );

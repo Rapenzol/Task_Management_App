@@ -38,3 +38,18 @@
 .add-task-btn:hover {
   background-color: #f3ff4a;
 }
+
+.logout-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  /* margin-left: 10px; */
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: #c0392b;
+}

@@ -5,8 +5,10 @@ import EditTaskModal from './EditTaskModal';
 import ViewTaskModal from './ViewCardModal';  
 import './TaskColumn.css';
 
-const TaskColumn = ({ status, tasks, updateTask, deleteTask, onView }) => {
-  const statusClass = status.toLowerCase().replace(" ", "");
+const TaskColumn = ({ status, tasks = [], updateTask, deleteTask, onView }) => {
+  console.log('Tasks in TaskColumn:', tasks);
+
+  const statusClass = status?.toLowerCase().replace(/\s/g, "") || "";
   const [selectedTask, setSelectedTask] = useState(null);      // For Edit Modal
   const [viewingTask, setViewingTask] = useState(null);        // For View Modal
   const { setNodeRef } = useDroppable({ id: status });
@@ -18,7 +20,7 @@ const TaskColumn = ({ status, tasks, updateTask, deleteTask, onView }) => {
       <div ref={setNodeRef} className="task-list">
         {tasks.map((task) => (
           <TaskCard
-            key={task.id}
+            key={task._id}
             task={task}
             onCardClick={setSelectedTask}    // Edit
             deleteTask={deleteTask}
