@@ -3,7 +3,7 @@ import ReactQuill from "react-quill-new";
 import "./EditTaskModal.css";
 import api from "../api";
 
-const EditTaskModal = ({ task, onSave, onClose }) => {
+const EditTaskModal = ({ task, onSave, onClose,token }) => {
   const [formData, setFormData] = useState({
     _id: null,
     title: "",
@@ -44,7 +44,9 @@ const EditTaskModal = ({ task, onSave, onClose }) => {
       //  API Call for Update
       const { data } = await api.put(
         `/tasks/${formData._id}`,
-        formData
+        formData,{
+            headers: { Authorization: `Bearer ${token}` }
+        }
       );
       onSave(data); // Updated task return
       onClose();

@@ -20,9 +20,9 @@ const App = () => {
   const [sortBy, setSortBy] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(null); 
 
-  // Fetch tasks when token exists
+  // Fetch tasks when token available
   useEffect(() => {
     if (!token) return;
 
@@ -34,14 +34,16 @@ const App = () => {
         setTasks(res.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
-        if (error.response?.status === 401) setToken(null);
+        if (error.response?.status === 401) {
+          setToken(null);
+        }
       }
     };
 
     fetchTasks();
   }, [token]);
 
-  // Add task
+  // ✅ Add task
   const addTask = async (newTask) => {
     try {
       const res = await api.post("/tasks", newTask, {
@@ -53,28 +55,48 @@ const App = () => {
     }
   };
 
-  // Update task
+  // ✅ Update task
   const updateTask = async (updatedTask) => {
     try {
       const res = await api.put(`/tasks/${updatedTask._id}`, updatedTask, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setTasks(tasks.map((t) => (t._id === updatedTask._id ? res.data : t)));
+      setTasks(tasks.map((task) => (task._id === updatedTask._id ? res.data : task)));
       setEditingTask(null);
     } catch (error) {
       console.error("Error updating task:", error);
     }
   };
 
-  // Delete task
+  // ✅ Delete task
   const deleteTask = async (id) => {
     try {
       await api.delete(`/tasks/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setTasks(tasks.filter((t) => t._id !== id));
+      setTasks(tasks.filter((task) => task._id !== id));
     } catch (error) {
       console.error("Error deleting task:", error);
+    }
+  };
+
+  // ✅ Drag and Drop
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    const taskId = active.id;
+    const newStatus = over.id;
+
+    try {
+      const taskToUpdate = tasks.find((task) => task._id === taskId);
+      const updatedTask = { ...taskToUpdate, status: newStatus };
+      const res = await api.put(`/tasks/${taskId}`, updatedTask, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTasks(tasks.map((task) => (task._id === taskId ? res.data : task)));
+    } catch (error) {
+      console.error("Error updating task status:", error);
     }
   };
 
@@ -84,43 +106,25 @@ const App = () => {
   const handleViewClick = (task) => setViewingTask(task);
   const handleCloseViewModal = () => setViewingTask(null);
 
-  const handleDragEnd = async (event) => {
-    const { active, over } = event;
-    if (!over) return;
-
-    const taskId = active.id;
-    const newStatus = over.id;
-
-    try {
-      const taskToUpdate = tasks.find((t) => t._id === taskId);
-      const updatedTask = { ...taskToUpdate, status: newStatus };
-      const res = await api.put(`/tasks/${taskId}`, updatedTask, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setTasks(tasks.map((t) => (t._id === taskId ? res.data : t)));
-    } catch (error) {
-      console.error("Error updating task status:", error);
-    }
-  };
-
   const handleFilter = (value) => setFilter(value);
   const handleSort = (value) => setSortBy(value);
   const handleSearch = (value) => setSearchTerm(value.toLowerCase());
+  const handleLogout = () => setToken(null);
 
-  const handleLogout = () => setToken(null); // ✅ just clear state
-
-  const filteredTasks = tasks.filter((t) => {
-    const matchesPriority = filter ? t.priority === filter : true;
-    const matchesSearch = searchTerm ? t.title.toLowerCase().includes(searchTerm) : true;
+  // ✅ Filter + Sort
+  const filteredTasks = tasks.filter((task) => {
+    const matchesPriority = filter ? task.priority === filter : true;
+    const matchesSearch = searchTerm ? task.title.toLowerCase().includes(searchTerm) : true;
     return matchesPriority && matchesSearch;
   });
 
   const sortedTasks = [...filteredTasks].sort((a, b) => {
     if (sortBy === "alphabetical") return a.title.localeCompare(b.title);
-    if (sortBy === "status") return a.status.localeCompare(b.status);
+    else if (sortBy === "status") return a.status.localeCompare(b.status);
     return 0;
   });
 
+  // ✅ Dashboard component
   const Dashboard = () => (
     <div className="App">
       <Navbar
@@ -137,7 +141,7 @@ const App = () => {
               key={status}
               status={status}
               id={status}
-              tasks={sortedTasks.filter((t) => t.status === status)}
+              tasks={sortedTasks.filter((task) => task.status === status)}
               updateTask={updateTask}
               deleteTask={deleteTask}
               onEdit={handleEditClick}
@@ -148,8 +152,19 @@ const App = () => {
         </div>
       </DndContext>
 
-      {showAddModal && <AddTaskModal onClose={() => setShowAddModal(false)} onTaskAdded={addTask} />}
-      {editingTask && <EditTaskModal task={editingTask} onSave={updateTask} onClose={handleCloseModal} />}
+      {showAddModal && (
+        <AddTaskModal onClose={() => setShowAddModal(false)} onTaskAdded={addTask} token={token} />
+      )}
+
+      {editingTask && (
+        <EditTaskModal
+          task={editingTask}
+          onSave={updateTask}
+          onClose={handleCloseModal}
+          token={token} // ✅ token passed
+        />
+      )}
+
       {viewingTask && <ViewTaskModal task={viewingTask} onClose={handleCloseViewModal} />}
     </div>
   );

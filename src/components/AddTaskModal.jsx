@@ -4,7 +4,7 @@ import "react-quill-new/dist/quill.snow.css";
 import "./AddTaskModal.css";
 import api from "../api";
 
-const AddTaskModal = ({ onClose, onTaskAdded }) => {
+const AddTaskModal = ({ onClose, onTaskAdded, token }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -21,8 +21,10 @@ const AddTaskModal = ({ onClose, onTaskAdded }) => {
     if (!formData.title.trim()) return alert("Title is required");
 
     try {
-      const res = await api.post("/tasks", formData);
-      onTaskAdded(res.data); // ✅ backend se task data
+      const res = await api.post("/tasks", formData, {
+        headers: { Authorization: `Bearer ${token}` }, // ✅ token added
+      });
+      onTaskAdded(res.data);
       onClose();
     } catch (error) {
       console.error("Error adding task:", error.response?.data || error.message);
