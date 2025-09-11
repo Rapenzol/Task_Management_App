@@ -38,21 +38,22 @@ const EditTaskModal = ({ task, onSave, onClose, token }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
-
     setLoading(true);
     try {
       const { _id, ...updateData } = formData;
+
+      console.log("Updating task:", _id, updateData);
       const { data } = await api.put(
         `/tasks/${_id}`,
-        updateData,
+        updateData, // ✅ yaha sirf body
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+
       onSave(data); // Updated task return
       onClose();
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error updating task:", error);
       alert("Failed to update task");
     } finally {
@@ -73,7 +74,7 @@ const EditTaskModal = ({ task, onSave, onClose, token }) => {
               <input
                 type="text"
                 name="title"
-                 placeholder="Task Title"
+                placeholder="Task Title"
                 value={formData.title}
                 onChange={handleChange}
                 required

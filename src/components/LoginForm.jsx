@@ -14,13 +14,13 @@ const Login = ({ onLogin }) => {   // ✅ parent se onLogin prop le rahe
 
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+      const res = await axios.post("https://task-manager-backend-production-e3a6.up.railway.app/api/auth/login", {
         email: email.trim().toLowerCase(),
         password: password.trim(),
       },
         {
           headers: {
-            "Content-Type": "application/json", // ✅ Add this
+            "Content-Type": "application/json",
           }
         });
 
