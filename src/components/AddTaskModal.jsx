@@ -9,7 +9,7 @@ const AddTaskModal = ({ onClose, onTaskAdded, token }) => {
     title: "",
     description: "",
     status: "To Do",
-    priority: "Low", 
+    priority: "Low",
   });
 
   const handleChange = (e) => {
@@ -18,17 +18,24 @@ const AddTaskModal = ({ onClose, onTaskAdded, token }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.title.trim()) return alert("Title is required");
+
+    if (!formData.title.trim()) { 
+      alert("Title is required");
+      return;
+    }
 
     try {
       const res = await api.post("/tasks", formData, {
-        headers: { Authorization: `Bearer ${token}` }, // ✅ token added
+        headers: { Authorization: `Bearer ${token}` },
       });
       onTaskAdded(res.data);
       onClose();
     } catch (error) {
-      console.error("Error adding task:", error.response?.data || error.message);
-      alert(`Failed to add task: ${error.response?.data?.message || error.message}`);
+      alert(
+        `Failed to add task: ${
+          error.response?.data?.message || error.message
+        }`
+      );
     }
   };
 
@@ -45,6 +52,7 @@ const AddTaskModal = ({ onClose, onTaskAdded, token }) => {
               value={formData.title}
               onChange={handleChange}
               placeholder="Enter task title"
+              required
             />
           </div>
 
@@ -53,13 +61,19 @@ const AddTaskModal = ({ onClose, onTaskAdded, token }) => {
             <ReactQuill
               theme="snow"
               value={formData.description}
-              onChange={(value) => setFormData({ ...formData, description: value })}
+              onChange={(value) =>
+                setFormData({ ...formData, description: value })
+              }
             />
           </div>
 
           <div className="form-group">
             <label>Status</label>
-            <select name="status" value={formData.status} onChange={handleChange}>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+            >
               <option value="To Do">To Do</option>
               <option value="In Progress">In Progress</option>
               <option value="Done">Done</option>
@@ -68,7 +82,11 @@ const AddTaskModal = ({ onClose, onTaskAdded, token }) => {
 
           <div className="form-group">
             <label>Priority</label>
-            <select name="priority" value={formData.priority} onChange={handleChange}>
+            <select
+              name="priority"
+              value={formData.priority}
+              onChange={handleChange}
+            >
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>
               <option value="High">High</option>
@@ -76,8 +94,12 @@ const AddTaskModal = ({ onClose, onTaskAdded, token }) => {
           </div>
 
           <div className="modal-actions">
-            <button type="submit" className="save-btn">Add Task</button>
-            <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
+            <button type="submit" className="save-btn">
+              Add Task
+            </button>
+            <button type="button" className="cancel-btn" onClick={onClose}>
+              Cancel
+            </button>
           </div>
         </form>
       </div>

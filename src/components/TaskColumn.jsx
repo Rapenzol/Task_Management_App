@@ -6,7 +6,7 @@ import ViewTaskModal from './ViewCardModal';
 import './TaskColumn.css';
 
 const TaskColumn = ({ status, tasks = [], updateTask, deleteTask, onView }) => {
-  console.log('Tasks in TaskColumn:', tasks);
+  // console.log('Tasks in TaskColumn:', tasks);
 
   const statusClass = status?.toLowerCase().replace(/\s/g, "") || "";
   const [selectedTask, setSelectedTask] = useState(null);      // For Edit Modal

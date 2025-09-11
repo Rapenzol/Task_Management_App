@@ -3,7 +3,7 @@ import ReactQuill from "react-quill-new";
 import "./EditTaskModal.css";
 import api from "../api";
 
-const EditTaskModal = ({ task, onSave, onClose,token }) => {
+const EditTaskModal = ({ task, onSave, onClose, token }) => {
   const [formData, setFormData] = useState({
     _id: null,
     title: "",
@@ -40,17 +40,17 @@ const EditTaskModal = ({ task, onSave, onClose,token }) => {
 
     setLoading(true);
     try {
-    const { _id, ...updateData } = formData; 
-    const { data } = await api.put(
-      `/tasks/${_id}`,
-      updateData,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    onSave(data); // Updated task return
-    onClose();
-  }
+      const { _id, ...updateData } = formData;
+      const { data } = await api.put(
+        `/tasks/${_id}`,
+        updateData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      onSave(data); // Updated task return
+      onClose();
+    }
     catch (error) {
       console.error("Error updating task:", error);
       alert("Failed to update task");
@@ -72,6 +72,7 @@ const EditTaskModal = ({ task, onSave, onClose,token }) => {
               <input
                 type="text"
                 name="title"
+                 placeholder="Task Title"
                 value={formData.title}
                 onChange={handleChange}
                 required

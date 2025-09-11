@@ -24,7 +24,7 @@
 }
 
 .task-list {
-  min-height: 200px;
+  min-height: 100%;
   padding: 10px;
   border: 2px dashed lightgray;
   border-radius: 8px;
