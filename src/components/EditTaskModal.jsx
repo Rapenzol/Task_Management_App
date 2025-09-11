@@ -5,7 +5,6 @@ import api from "../api";
 
 const EditTaskModal = ({ task, onSave, onClose,token }) => {
   const [formData, setFormData] = useState({
-    _id: null,
     title: "",
     description: "",
     status: "To Do",
@@ -17,7 +16,6 @@ const EditTaskModal = ({ task, onSave, onClose,token }) => {
   useEffect(() => {
     if (task) {
       setFormData({
-        _id: task._id,
         title: task.title || "",
         description: task.description || "",
         status: task.status || "To Do",
