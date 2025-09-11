@@ -56,17 +56,19 @@ const App = () => {
   };
 
   // ✅ Update task
-  const updateTask = async (updatedTask) => {
-    try {
-      const res = await api.put(`/tasks/${updatedTask._id}`, updatedTask, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setTasks(tasks.map((task) => (task._id === updatedTask._id ? res.data : task)));
-      setEditingTask(null);
-    } catch (error) {
-      console.error("Error updating task:", error);
-    }
-  };
+ const updateTask = async (updatedTask) => {
+  try {
+    const { _id, ...updateData } = updatedTask; 
+    const res = await api.put(`/tasks/${_id}`, updateData, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setTasks(tasks.map((task) => (task._id === _id ? res.data : task)));
+    setEditingTask(null);
+  } catch (error) {
+    console.error("Error updating task:", error);
+  }
+};
+
 
   // ✅ Delete task
   const deleteTask = async (id) => {
