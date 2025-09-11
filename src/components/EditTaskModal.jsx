@@ -5,6 +5,7 @@ import api from "../api";
 
 const EditTaskModal = ({ task, onSave, onClose,token }) => {
   const [formData, setFormData] = useState({
+    _id: null,
     title: "",
     description: "",
     status: "To Do",
