@@ -41,16 +41,18 @@ const EditTaskModal = ({ task, onSave, onClose,token }) => {
 
     setLoading(true);
     try {
-      //  API Call for Update
-      const { data } = await api.put(
-        `/tasks/${formData._id}`,
-        formData,{
-            headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-      onSave(data); // Updated task return
-      onClose();
-    } catch (error) {
+    const { _id, ...updateData } = formData; 
+    const { data } = await api.put(
+      `/tasks/${_id}`,
+      updateData,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    onSave(data); // Updated task return
+    onClose();
+  }
+    catch (error) {
       console.error("Error updating task:", error);
       alert("Failed to update task");
     } finally {
