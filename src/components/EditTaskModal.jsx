@@ -39,7 +39,7 @@ const EditTaskModal = ({ task, onSave, onClose, token }) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
     setLoading(true);
-    console.log("Token being sent:", token);
+  console.log("Token received in EditTaskModal:", token);
     try {
       const { _id, ...updateData } = formData;
 

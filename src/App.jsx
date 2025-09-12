@@ -142,6 +142,7 @@ const App = () => {
               onEdit={handleEditClick}
               onView={handleViewClick}
               onAddTaskClick={() => setShowAddModal(true)}
+              token={token}
             />
           ))}
         </div>
