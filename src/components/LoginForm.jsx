@@ -25,10 +25,7 @@ const Login = ({ onLogin }) => {   // ✅ parent se onLogin prop le rahe
         });
 
       if (res.data?.token) {
-        //JWT token localStorage me save karo
-        localStorage.setItem("token", res.data.token);
-
-        //parent ko token bhejo (App.jsx ke setToken ko call karega)
+        //parent ko token bheja (App.jsx ke setToken ko call karega)
         onLogin(res.data.token);
 
         //Login ke baad dashboard pe redirect

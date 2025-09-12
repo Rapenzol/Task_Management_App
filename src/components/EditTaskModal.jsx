@@ -39,19 +39,25 @@ const EditTaskModal = ({ task, onSave, onClose, token }) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
     setLoading(true);
+    console.log("Token being sent:", token);
     try {
       const { _id, ...updateData } = formData;
 
-      console.log("Updating task:", _id, updateData);
+      // Clean description (HTML tags remove)
+      const cleanDescription = updateData.description.replace(/<[^>]+>/g, "");
+      const payload = { ...updateData, description: cleanDescription };
+
+      console.log("Updating task:", _id, payload);
+
       const { data } = await api.put(
         `/tasks/${_id}`,
-        updateData, // ✅ yaha sirf body
+        payload,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      onSave(data); // Updated task return
+      onSave(data); 
       onClose();
     } catch (error) {
       console.error("Error updating task:", error);
