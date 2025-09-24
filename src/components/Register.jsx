@@ -11,6 +11,7 @@ const Register = () => {
   const [otpSent, setOtpSent] = useState(false);
   const navigate = useNavigate();
 
+
   // ✅ Send OTP function
   const sendOtp = async () => {
     if (!email) {
@@ -19,19 +20,17 @@ const Register = () => {
     }
 
     try {
-      const res = await axios.post(
-        "https://task-manager-backend-production-e3a6.up.railway.app/api/auth/send-otp",
-        { email: email.trim().toLowerCase() }
-      );
-      alert(res.data.message || "OTP sent to your email!");
-      setOtpSent(true); // OTP sent successfully
+      await axios.post("https://task-manager-backend-production-e3a6.up.railway.app/api/auth/send-otp", {
+        email: email.trim().toLowerCase()
+      });
+      alert("OTP sent to your email!");
+      setOtpSent(true);
     } catch (err) {
       console.error("Send OTP error:", err.response?.data || err.message);
-      alert(err.response?.data?.message || "Failed to send OTP");
+      alert("Failed to send OTP");
     }
   };
 
-  // ✅ Signup function
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -46,26 +45,20 @@ const Register = () => {
       return;
     }
 
-    if (!otp) {
-      alert("Please enter the OTP!");
-      return;
-    }
-
     try {
-      const res = await axios.post(
-        "https://task-manager-backend-production-e3a6.up.railway.app/api/auth/signup",
-        {
-          name,
-          email: email.trim().toLowerCase(),
-          password: password.trim(),
-          otp: otp.trim(),
-        }
-      );
-      alert(res.data.message || "Registration successful!");
-      navigate("/login"); // Redirect to login page
+      const res = await axios.post("https://task-manager-backend-production-e3a6.up.railway.app/api/auth/signup", {
+        name,
+        email: email.trim().toLowerCase(),
+        password: password.trim(),
+        otp: otp.trim()
+      });
+      console.log("Signup success:", res.data);
+      alert("Registration successful!");
+      // Redirect to login page
+      navigate("/login");
     } catch (err) {
-      console.error("Signup error:", err.response?.data || err.message);
       alert(err.response?.data?.message || "Registration failed!");
+      console.error("Signup error:", err.response?.data || err.message);
     }
   };
 
@@ -101,32 +94,20 @@ const Register = () => {
           required
         />
 
-        {/* OTP field only shows after OTP is sent */}
-        {otpSent && (
-          <>
-            <label>OTP</label>
-            <input
-              type="text"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              required
-            />
-          </>
-        )}
+        <label>OTP</label>
+        <input
+          type="text"
+          placeholder="Enter OTP"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          required
+        />
 
-        <button
-          type="button"
-          onClick={sendOtp}
-          disabled={otpSent} // Disable button after sending OTP
-        >
-          {otpSent ? "OTP Sent" : "Send OTP"}
-        </button>
-
-        <button type="submit">Register</button>
+        <button type="button" onClick={sendOtp}>Send OTP</button>
 
         <p className="login-link">
-          Already have an account? <a href="/login">Login here</a>
+          Already have an account?{" "}
+          <a href="/login">Login here</a>
         </p>
       </form>
     </div>
